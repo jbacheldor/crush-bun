@@ -1,7 +1,5 @@
 import { getInvites } from "./src/invites";
 
-console.log("Hello via Bun!");
-
 const server = Bun.serve({
     port: 3001,
     routes: {
@@ -11,7 +9,11 @@ const server = Bun.serve({
     error(error) {
         console.error(error);
         return new Response(JSON.stringify({error: "Internal Server Error", status: 500}), { headers: {"Access-Control-Allow-Origin": "*"}})
-    }
+    },
+    async fetch(req) {
+        console.log('weeee what the request', req)
+    return new Response("hello world");
+    },
 })
 
 console.log(`listening on ${server.url}`)
