@@ -1,7 +1,7 @@
 import { getInvites } from "./src/invites";
 
 const server = Bun.serve({
-    port: 3001,
+    port: 3000,
     routes: {
         "/": () => {return new Response(JSON.stringify({message: 'Bun!', status: 203}), { headers: {"Access-Control-Allow-Origin": "*"}})},
         "/getinvites/:invite":  (req) => getInvites(req)
