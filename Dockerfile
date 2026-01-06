@@ -1,39 +1,26 @@
-# syntax = docker/dockerfile:1
+# Use the official AWS Lambda adapter image to handle the Lambda runtime
+FROM public.ecr.aws/awsguru/aws-lambda-adapter:0.9.0 AS aws-lambda-adapter
 
-# Adjust BUN_VERSION as desired
-ARG BUN_VERSION=1.1.24
-FROM oven/bun:${BUN_VERSION}-slim AS base
+# Use the official Bun image to run the application
+FROM oven/bun:debian AS bun_latest
 
-LABEL fly_launch_runtime="Bun"
+# Copy the Lambda adapter into the container
+COPY --from=aws-lambda-adapter /lambda-adapter /opt/extensions/lambda-adapter
 
-# Bun app lives here
-WORKDIR /app
+# Set the port to 8080. This is required for the AWS Lambda adapter.
+ENV PORT=8080
 
-# Set production environment
-ENV NODE_ENV="production"
+# Set the work directory to `/var/task`. This is the default work directory for Lambda.
+WORKDIR "/var/task"
 
+# Copy the package.json and bun.lock into the container
+COPY package.json bun.lock ./
 
-# Throw-away build stage to reduce size of final image
-FROM base AS build
+# Install the dependencies
+RUN bun install --production --frozen-lockfile
 
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential pkg-config python-is-python3
+# Copy the rest of the application into the container
+COPY . /var/task
 
-# Install node modules
-COPY bun.lock package.json ./
-RUN bun install --ci
-
-# Copy application code
-COPY . .
-
-
-# Final stage for app image
-FROM base
-
-# Copy built application
-COPY --from=build /app /app
-
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
-CMD [ "bun", "run", "start" ]
+# Run the application.
+CMD ["bun", "run", "start"]
