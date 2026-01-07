@@ -97,7 +97,7 @@ export async function getSettings(req: Bun.BunRequest) {
 export async function getUserInfo(req: Bun.BunRequest) {
 
     try {
-        const id = req.params
+        const {id} = req.params
         if(!id) throw new Error('no id found!') 
         
         const turso = createDBClient()
@@ -105,6 +105,12 @@ export async function getUserInfo(req: Bun.BunRequest) {
             sql: "SELECT * FROM User JOIN Instance ON User.user_id = owner_id WHERE owner_id = ?",
             args: [id],
         });
+
+        console.log('what is user', user)
+
+        if(user.rows[0]?.length == 0){
+            return new Response(JSON.stringify({ message: 'user not found wahooo', status: '300'}), { headers: {"Access-Control-Allow-Origin": "*"}})
+        }
 
         return new Response(JSON.stringify({ data: user.rows[0], status: '200'}), { headers: {"Access-Control-Allow-Origin": "*"}})
 
