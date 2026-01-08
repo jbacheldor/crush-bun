@@ -1,4 +1,5 @@
 import { submitBugReport } from "./src/api-calls/bug";
+import { getCrushes, getCrushesInfo, getCrushesUpdates } from "./src/api-calls/crush";
 import { createAccount, getInvites } from "./src/api-calls/invites";
 import { submitLottery } from "./src/api-calls/lottery";
 import { cancelInvite, getSettings, getUserInfo, removeFriend, updateProfile } from "./src/api-calls/settings";
@@ -32,6 +33,15 @@ const server = Bun.serve({
         "/lottery": {
             POST: (req) => submitLottery(req)
         },
+        "/crush/getUpdates/:id/:instance_id": {
+            GET: (req)=> getCrushesUpdates(req)
+        },
+        "/crush/getCrushes/:id": {
+            GET: (req)=> getCrushes(req)
+        },
+        "/crush/getCrushInfo/:id": {
+            GET: (req)=> getCrushesInfo(req)
+        }
     },
     error(error) {
         console.error(error);
