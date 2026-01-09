@@ -19,7 +19,7 @@ export async function submitLottery(req: Bun.BunRequest){
         const today = new Date(Date.now()).toString()
 
         const turso = createDBClient()
-        const res = await turso.execute({
+        await turso.execute({
             sql: 'INSERT INTO lottery (id, name, email, number, date) VALUES (?, ?, ?, ?, ?)',
             args: [uuid, form.name, form.email, form.number, today]
         })
