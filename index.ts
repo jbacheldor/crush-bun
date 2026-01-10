@@ -1,5 +1,5 @@
 import { submitBugReport } from "./src/api-calls/bug";
-import { submitComment } from "./src/api-calls/comment";
+import { deleteComment, editComment, getComments, submitComment } from "./src/api-calls/comment";
 import { getCrushes, getCrushesUpdates, submitCrush } from "./src/api-calls/crush";
 import { createAccount, getInvites } from "./src/api-calls/invites";
 import { submitLottery } from "./src/api-calls/lottery";
@@ -45,15 +45,24 @@ const server = Bun.serve({
         },
         "/comment/newComment": {
             POST: (req) => submitComment(req)
+        },
+        "/comment/getComments/:post_id": {
+            GET: (req) => getComments(req)
+        },
+        "/comment/editComment": {
+            PATCH: (req) => editComment(req)
+        },
+        "/comment/deleteComment/:comment_id": {
+            DELETE: (req) => deleteComment(req)
         }
     },
     error(error) {
         console.error(error);
-        return new Response(JSON.stringify({error: "Internal Server Error", status: 500}), { headers: {"Access-Control-Allow-Origin": "*"}})
+        return new Response(JSON.stringify({error: "Internal Server Error", status: 500}), { headers: {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "*"}})
     },
     async fetch(req) {
         console.log('welp we found no matches to that url', req.url)
-        return new Response(JSON.stringify("welp we found no matches to that url: " + req.url), { headers: {"Access-Control-Allow-Origin": "*"}});
+        return new Response(JSON.stringify("welp we found no matches to that url"), { headers: {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "*"}});
     },
 })
 

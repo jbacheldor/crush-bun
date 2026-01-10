@@ -14,6 +14,7 @@ export async function submitLottery(req: Bun.BunRequest){
     try {
         const form = await req.json() as lotteryInput
 
+        console.log('what is form', form)
         const uuid = v4()
 
         const today = new Date(Date.now()).toString()
