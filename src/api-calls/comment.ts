@@ -60,23 +60,22 @@ type editComments = {
 
 export async function editComment(req: Bun.BunRequest) {
     try {
-        console.log('ahahha')
-        const {text, comment_id}  = await req.json() as editComments
+
+        const {text, comment_id} = await req.json() as editComments
 
         if(!text || !comment_id) throw new Error('insufficient input')
-            console.log('hewo')
 
-        // const turso = createDBClient()
-        // await turso.execute({
-        //     sql: 'UPDATE Comments SET text = ? WHERE comment_id = ?',
-        //     args: [body.text, body.comment_id]
-        // })
+        const turso = createDBClient()
+        await turso.execute({
+            sql: 'UPDATE Comments SET text = ? WHERE comment_id = ?',
+            args: [text, comment_id]
+        })
 
-        return new Response(JSON.stringify({message: 'updated successfully!' , status: 200}),  { headers: {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "*"}})
+        return new Response(JSON.stringify({message: 'updated successfully!' , status: 200}),  { headers: {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "*", "Accept-Patch": "*/*"}})
 
     }catch(error){
         console.error('error editting comment. try again later', error)
-        return new Response(JSON.stringify({error: 'error editting comment. try again later', status: 400}),  { headers: {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "*"}})
+        return new Response(JSON.stringify({error: 'error editting comment. try again later', status: 400}),  { headers: {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "*", "Accept-Patch": "*/*"}})
     }
 }
 
@@ -87,11 +86,11 @@ export async function deleteComment(req: Bun.BunRequest) {
         const {comment_id} = req.params
 
         if(!comment_id) throw new Error('no comment id!')
-        const turso = createDBClient()
-        await turso.execute({
-            sql: 'DELETE FROM Comments WHERE comment_id = ?',
-            args: [comment_id]
-        })
+        // const turso = createDBClient()
+        // await turso.execute({
+        //     sql: 'DELETE FROM Comments WHERE comment_id = ?',
+        //     args: [comment_id]
+        // })
 
         return new Response(JSON.stringify({message: 'successfully deleted comment' ,status: 200}),  { headers: {"Access-Control-Allow-Origin": "*"}})
 

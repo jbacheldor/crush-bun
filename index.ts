@@ -50,7 +50,7 @@ const server = Bun.serve({
             GET: (req) => getComments(req)
         },
         "/comment/editComment": {
-            PATCH: (req) => editComment(req)
+            POST: (req) => editComment(req)
         },
         "/comment/deleteComment/:comment_id": {
             DELETE: (req) => deleteComment(req)
@@ -61,6 +61,8 @@ const server = Bun.serve({
         return new Response(JSON.stringify({error: "Internal Server Error", status: 500}), { headers: {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "*"}})
     },
     async fetch(req) {
+        // const path = new URL(req.url).pathname;
+
         console.log('welp we found no matches to that url', req.url)
         return new Response(JSON.stringify("welp we found no matches to that url"), { headers: {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "*"}});
     },
